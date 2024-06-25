@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Home</title>
+</head>
+<body>
+    <div id="home">
+        <h2>Welcome to Fantasy Football</h2>
+        <button id="rankingsButton">Rankings</button>
+        <button id="friendsButton">Friends</button>
+        <button id="logoutButton">Logout</button>
+    </div>
+    <script>
+        document.getElementById('rankingsButton').addEventListener('click', () => {
+            window.location.href = '/rankings.html';
+        });
+
+        document.getElementById('friendsButton').addEventListener('click', () => {
+            window.location.href = '/friends.html';
+        });
+
+        document.getElementById('logoutButton').addEventListener('click', () => {
+            fetch('/logout', {
+                method: 'POST',
+            }).then(response => response.text()).then(data => {
+                console.log(data);
+                window.location.href = '/login.html';
+            }).catch(error => console.error('Error logging out:', error));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matchup</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Matchup</h1>
+    <h2>Your Rankings</h2>
+    <ul id="userPlayerList"></ul>
+    <h2>Friend's Rankings</h2>
+    <ul id="friendPlayerList"></ul>
+    <button id="backButton">Back</button>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userPlayerList = document.getElementById('userPlayerList');
+            const friendPlayerList = document.getElementById('friendPlayerList');
+            const backButton = document.getElementById('backButton');
+
+            const friendUsername = new URLSearchParams(window.location.search).get('friend');
+
+            fetch(`/get-player-rankings?friend=${friendUsername}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.userRankings && data.friendRankings) {
+            displayRankings(data.userRankings, data.friendRankings);
+        } else {
+            console.error('Invalid data format:', data);
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching player rankings:', error);
+    });
+
+            function distributePlayers(userRankings, friendRankings) {
+                const userTeam = [];
+                const friendTeam = [];
+                const allPlayers = new Set([...userRankings, ...friendRankings]);
+
+                allPlayers.forEach(player => {
+                    const userIndex = userRankings.indexOf(player);
+                    const friendIndex = friendRankings.indexOf(player);
+
+                    if (userIndex !== -1 && friendIndex !== -1) {
+                        if (userTeam.length <= friendTeam.length) {
+                            userTeam.push(player);
+                        } else {
+                            friendTeam.push(player);
+                        }
+                    } else if (userIndex !== -1) {
+                        userTeam.push(player);
+                    } else if (friendIndex !== -1) {
+                        friendTeam.push(player);
+                    }
+                });
+
+                return { user: userTeam.slice(0, 5), friend: friendTeam.slice(0, 5) };
+            }
+
+            function populatePlayerList(listElement, players) {
+                listElement.innerHTML = '';
+                players.forEach(player => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = player;
+                    listElement.appendChild(listItem);
+                });
+            }
+
+            backButton.addEventListener('click', () => {
+                window.location.href = '/index.html';
+            });
+        });
+    </script>
+</body>
+</html>
