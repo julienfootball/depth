@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rankings</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+        #rankings {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            width: 60%;
+        }
+        #rankings li {
+            margin: 2px;
+            padding: 8px;
+            font-size: 1.2em;
+            cursor: move;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Rankings</h1>
+    <button onclick="window.location.href='/'">Back</button>
+    <ul id="rankings"></ul>
+    <button id="save-rankings">Save Rankings</button>
+
+    <script>
+        $(document).ready(function () {
+            // Make the rankings list sortable
+            $('#rankings').sortable();
+            $('#rankings').disableSelection();
+
+            // Fetch the current rankings or default player data
+            $.get('/get-rankings', function (data) {
+                let rankings;
+                try {
+                    rankings = JSON.parse(data);
+                } catch (e) {
+                    rankings = data;
+                }
+
+                if (!rankings || rankings.length === 0) {
+                    console.log('No rankings found for the user. Loading default player list.');
+                    $.get('/player-data', function (playerData) {
+                        const players = Object.values(playerData)
+                            .filter(player => player.position === 'QB' && player.search_rank)
+                            .sort((a, b) => a.search_rank - b.search_rank);
+
+                        players.forEach(player => {
+                            $('#rankings').append(`<li>${player.full_name}</li>`);
+                        });
+                    });
+                } else {
+                    rankings.forEach(player => {
+                        $('#rankings').append(`<li>${player}</li>`);
+                    });
+                }
+            });
+
+            // Save the rankings
+            $('#save-rankings').click(function () {
+                const rankings = [];
+                $('#rankings li').each(function () {
+                    rankings.push($(this).text());
+                });
+                $.ajax({
+                    url: '/save-rankings',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ rankings }),
+                    success: function (response) {
+                        alert('Rankings saved successfully');
+                    },
+                    error: function (error) {
+                        alert('Error saving rankings');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

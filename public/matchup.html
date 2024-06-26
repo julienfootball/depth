@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matchup</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .ranking-section {
+            width: 45%;
+        }
+        .ranking-section h2 {
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .ranking-section ul {
+            list-style-type: none;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Matchup</h1>
+    <div class="container">
+        <div class="ranking-section">
+            <h2 id="userRankingsHeader">Your Rankings</h2>
+            <ul id="userPlayerList"></ul>
+        </div>
+        <div class="ranking-section">
+            <h2 id="friendRankingsHeader">Friend's Rankings</h2>
+            <ul id="friendPlayerList"></ul>
+        </div>
+    </div>
+    <button id="backButton">Back</button>
+    <script src="matchup.js"></script>
+</body>
+</html>
