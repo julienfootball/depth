@@ -60,8 +60,8 @@ app.get('/login.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-app.get('/rankings.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'rankings.html'));
+app.get('/qb_rankings.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'qb_rankings.html'));
 });
 
 app.get('/friends.html', (req, res) => {

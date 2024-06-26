@@ -26,7 +26,7 @@
             const result = await response.text();
             if (response.ok) {
                 console.log('Login successful:', result);
-                window.location.href = '/';  // Redirect to home page
+                window.location.href = '/qb_rankings.html';  // Redirect to QB Rankings page
             } else {
                 console.error('Error:', result);
                 alert('Login failed: ' + result);  // Display an error message
