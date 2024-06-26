@@ -3,48 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
     <title>Login</title>
 </head>
 <body>
-    <div id="login">
-        <h2>Login</h2>
-        <form id="loginForm">
-            <input type="text" id="loginUsername" placeholder="Username" required>
-            <input type="password" id="loginPassword" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
-        <button id="registerButton">Register</button>
-    </div>
+    <form id="loginForm" action="/login" method="POST">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+    <button id="registerButton">Register</button>
     <script>
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
-
-            fetch('/login', {
+            const formData = new FormData(this);
+            const response = await fetch(this.action, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Invalid credentials');
+                body: new URLSearchParams(formData),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
-                return response.text();
-            })
-            .then(data => {
-                console.log(data);
-                window.location.href = '/rankings.html';
-            })
-            .catch(error => {
-                alert(error.message);
-                console.error('Error:', error);
             });
+            const result = await response.text();
+            if (response.ok) {
+                console.log('Login successful:', result);
+                window.location.href = '/';  // Redirect to home page
+            } else {
+                console.error('Error:', result);
+                alert('Login failed: ' + result);  // Display an error message
+            }
         });
 
-        document.getElementById('registerButton').addEventListener('click', () => {
-            window.location.href = '/register.html';
+        document.getElementById('registerButton').addEventListener('click', function () {
+            window.location.href = '/register.html';  // Redirect to the registration page
         });
     </script>
 </body>

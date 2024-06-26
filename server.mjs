@@ -75,6 +75,7 @@ app.get('/matchup.html', (req, res) => {
 // User registration
 app.post('/register', async (req, res) => {
     const { username, password } = req.body;
+    console.log('Received registration request:', { username, password });
     try {
         await pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, password]);
         req.session.user = username;
@@ -88,6 +89,7 @@ app.post('/register', async (req, res) => {
 // User login
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
+    console.log('Received login request:', { username, password });  // Add this line
     try {
         const result = await pool.query('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password]);
         if (result.rows.length > 0) {
